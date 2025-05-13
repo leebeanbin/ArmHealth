@@ -1,0 +1,202 @@
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes expandDown {
+  from { 
+    opacity: 0; 
+    max-height: 0; 
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1; 
+    max-height: 1000px; 
+    transform: translateY(0);
+  }
+}
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
+}
+@keyframes bounceIn {
+  0% { 
+    opacity: 0; 
+    transform: scale(0.3); 
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.05);
+  }
+  70% { 
+    opacity: 0.9; 
+    transform: scale(0.95);
+  }
+  100% { 
+    opacity: 1; 
+    transform: scale(1);
+  }
+}
+@keyframes scanDown {
+  0% { 
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% { 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(180px);
+    opacity: 0.5;
+  }
+}
+@keyframes progressBar {
+  0% { 
+    width: 0;
+    opacity: 0.8;
+  }
+  50% { 
+    opacity: 1;
+  }
+  100% { 
+    width: 100%;
+    opacity: 0.8;
+  }
+}
+@keyframes spin {
+  from { 
+    transform: rotate(0deg);
+  }
+  to { 
+    transform: rotate(360deg);
+  }
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes logoAnimation {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+@keyframes fadeInHeader {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeInFooter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slideUpContent {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fadeIn { 
+  animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-expandDown { 
+  animation: expandDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  overflow: hidden;
+}
+.animate-slideUp { 
+  animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-bounceIn { 
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+.animate-scanDown { 
+  animation: scanDown 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.animate-progressBar { 
+  animation: progressBar 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.animate-spin { 
+  animation: spin 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.logo-animation {
+  animation: logoAnimation 2s ease-in-out forwards;
+}
+.content-animation {
+  animation: fadeInUp 0.8s ease-out forwards;
+  animation-delay: 1.8s;
+  opacity: 0;
+}
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  animation: fadeOut 0.3s ease-out forwards;
+  animation-delay: 2s;
+}
+.header-animation {
+  animation: fadeInHeader 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+.footer-animation {
+  animation: fadeInFooter 0.8s ease-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+.main-content-animation {
+  animation: slideUpContent 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.8s;
+  opacity: 0;
+} 
