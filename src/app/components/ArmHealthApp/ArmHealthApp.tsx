@@ -12,7 +12,6 @@ import './animation.css';
 const ArmHealthApp = () => {
   // 상태 관리
   const [currentScreen, setCurrentScreen] = useState('home');
-  const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
