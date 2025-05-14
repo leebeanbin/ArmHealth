@@ -4,13 +4,19 @@ import { Home, Activity, Heart, Settings } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { usePathname } from 'next/navigation';
 
-const TabNavigation = () => {
-  const { isDarkMode } = useApp();
+interface TabNavigationProps {
+  currentScreen?: string;
+}
+
+const TabNavigation: React.FC<TabNavigationProps> = ({ currentScreen: propCurrentScreen }) => {
+  const { isDarkMode, navigateTo } = useApp();
   const pathname = usePathname();
-  const currentScreen = pathname.split('/').pop() || '';
+  
+  // prop으로 전달받은 currentScreen이 없으면 pathname에서 추출
+  const currentScreen = propCurrentScreen || pathname.split('/').pop() || 'home';
 
   const tabs = [
-    { id: '', icon: Home, label: '홈' },
+    { id: 'home', icon: Home, label: '홈' },
     { id: 'result', icon: Activity, label: '결과' },
     { id: 'exercise', icon: Heart, label: '마사지' },
     { id: 'profile', icon: Settings, label: '프로필' },
@@ -25,15 +31,12 @@ const TabNavigation = () => {
       <div className="max-w-lg mx-auto px-6">
         <div className="flex justify-between items-center">
           {tabs.map((tab) => {
-            const isActive = 
-              tab.id === '' 
-                ? currentScreen === '' 
-                : currentScreen.includes(tab.id);
+            const isActive = currentScreen === tab.id;
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
-                onClick={() => tab.id === '' ? window.location.href = '/' : window.location.href = `/${tab.id}`}
+                onClick={() => navigateTo(tab.id)}
                 className="flex flex-col items-center py-3 transition-all duration-200 relative"
               >
                 <div className={`p-2.5 rounded-full transition-all duration-200 ${

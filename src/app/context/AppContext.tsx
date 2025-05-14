@@ -1,6 +1,8 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { massageGuides as initialMassageGuides } from '../data/massageGuides';
+import { MassageGuides } from '../types/types';
 
 type MuscleData = {
   [key: string]: {
@@ -92,6 +94,7 @@ type AppContextType = {
   handleNextStep: () => void;
   handlePrevStep: () => void;
   muscleData: MuscleData;
+  massageGuides: MassageGuides;
   isDarkMode: boolean;
   toggleDarkMode: () => void;
 };
@@ -116,6 +119,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [showAlarm, setShowAlarm] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [muscleData] = useState(initialMuscleData);
+  const [massageGuides] = useState(initialMassageGuides);
 
   // 함수들
   const handleMuscleClick = (muscleId: string) => {
@@ -123,16 +127,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const navigateTo = (path: string, muscleId?: string) => {
-    if (path === '') {
+    if (path === 'home') {
       router.push('/');
     } else if (path === 'exercise' && muscleId) {
       router.push(`/exercise/${muscleId}`);
     } else if (path === 'result') {
       router.push('/result');
-    } else if (path === 'settings') {
-      router.push('/settings');
+    } else if (path === 'profile') {
+      router.push('/profile');
     } else if (path === 'scan') {
       router.push('/scan');
+    } else {
+      router.push(`/${path}`);
     }
   };
 
@@ -164,7 +170,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const handleNextStep = () => {
-    if (selectedExercise && currentStep < initialMuscleData[selectedExercise as keyof typeof initialMuscleData].recommendations.length - 1) {
+    if (selectedExercise && 
+        selectedExercise in massageGuides && 
+        currentStep < massageGuides[selectedExercise].steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -245,6 +253,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     handleNextStep,
     handlePrevStep,
     muscleData,
+    massageGuides,
     isDarkMode,
     toggleDarkMode,
   };

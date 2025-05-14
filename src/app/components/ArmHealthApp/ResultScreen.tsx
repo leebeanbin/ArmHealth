@@ -4,15 +4,17 @@ import { ArrowLeft, ChevronRight, AlertCircle, Activity } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from './common/Header';
+import { ResultScreenProps } from '../../types/types';
 
-const ResultScreen = () => {
+const ResultScreen: React.FC<ResultScreenProps> = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const {
+    isDarkMode,
     muscleData,
     getLoadColor,
     getLoadText,
-    isDarkMode
+    navigateTo
   } = useApp();
 
   const fromScan = searchParams.get('from') === 'scan';
@@ -24,10 +26,10 @@ const ResultScreen = () => {
     }
   }, [fromScan, muscleData, router]);
 
-  const averageLoad = Math.round(
-    Object.values(muscleData || {}).reduce((acc, curr) => acc + curr.load, 0) /
-    Object.values(muscleData || {}).length || 0
-  );
+  const averageLoad = muscleData ? Math.round(
+    Object.values(muscleData).reduce((acc, curr) => acc + curr.load, 0) /
+    Object.values(muscleData).length
+  ) : 0;
 
   if (!muscleData) return null;
 
@@ -37,7 +39,7 @@ const ResultScreen = () => {
         title="측정 결과"
         leftContent={
           <button 
-            onClick={() => router.push('/')}
+            onClick={() => navigateTo('home')}
             className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center 
             hover:bg-white/30 transition-all duration-200 active:scale-95"
           >
@@ -72,7 +74,7 @@ const ResultScreen = () => {
               {Object.entries(muscleData).map(([key, muscle]) => (
                 <button
                   key={key}
-                  onClick={() => router.push(`/exercise/${key}`)}
+                  onClick={() => navigateTo('exercise', key)}
                   className={`w-full ${isDarkMode ? 'bg-gray-800 hover:bg-gray-700/80' : 'bg-white hover:bg-gray-50/80'} rounded-2xl p-4 
                   transition-all duration-200 border ${isDarkMode ? 'border-gray-700' : 'border-gray-100'} group`}
                 >

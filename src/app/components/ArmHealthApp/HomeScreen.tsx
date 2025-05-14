@@ -1,44 +1,54 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Activity, ChevronRight } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
 import Header from './common/Header';
 import './animation.css';
+import { HomeScreenProps } from '../../types/types';
+import TabNavigation from './TabNavigation';
 
-const HomeScreen = () => {
+const HomeScreen: React.FC<HomeScreenProps> = () => {
   const router = useRouter();
-  const {
+  const pathname = usePathname();
+  const { 
+    isDarkMode, 
     muscleData,
     activeMuscle,
+    handleMuscleClick,
     getLoadColor,
     getLoadText,
-    handleMuscleClick,
-    isDarkMode
+    navigateTo
   } = useApp();
   const [showSplash, setShowSplash] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
 
   useEffect(() => {
-    // 첫 방문 여부 확인
-    const hasVisited = localStorage.getItem('hasVisitedHome');
-    if (!hasVisited) {
-      setShowSplash(true);
-      setIsFirstVisit(true);
-      localStorage.setItem('hasVisitedHome', 'true');
-      
-      const timer = setTimeout(() => {
-        setShowSplash(false);
-      }, 2300);
-      
-      return () => clearTimeout(timer);
+    // localStorage는 클라이언트 사이드에서만 실행
+    if (typeof window !== 'undefined') {
+      // 첫 방문 여부 확인
+      const hasVisited = localStorage.getItem('hasVisitedHome');
+      if (!hasVisited) {
+        setShowSplash(true);
+        setIsFirstVisit(true);
+        localStorage.setItem('hasVisitedHome', 'true');
+        
+        const timer = setTimeout(() => {
+          setShowSplash(false);
+        }, 2300);
+        
+        return () => clearTimeout(timer);
+      }
     }
   }, []);
 
-  const averageLoad = Math.round(
+  const averageLoad = muscleData ? Math.round(
     Object.values(muscleData).reduce((acc, curr) => acc + curr.load, 0) /
     Object.values(muscleData).length
-  );
+  ) : 0;
+
+  // pathname에서 현재 화면 이름 추출
+  const currentScreen = pathname.split('/').pop() || 'home';
 
   return (
     <>
@@ -63,7 +73,7 @@ const HomeScreen = () => {
             onProfileClick={() => router.push('/profile')}
             rightContent={
               <button
-                onClick={() => router.push('/scan')}
+                onClick={() => navigateTo('scan')}
                 className="px-5 py-2.5 bg-white/20 backdrop-blur-sm text-white text-sm rounded-2xl font-medium 
                 hover:bg-white/30 transition-all duration-200 active:scale-95"
               >
@@ -97,7 +107,7 @@ const HomeScreen = () => {
                 </h3>
                 
                 <div className="space-y-4">
-                  {Object.entries(muscleData).map(([key, muscle]) => (
+                  {muscleData && Object.entries(muscleData).map(([key, muscle]) => (
                     <div
                       key={key}
                       className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-2xl transition-all duration-300 overflow-hidden
@@ -171,7 +181,7 @@ const HomeScreen = () => {
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                router.push(`/exercise/${key}`);
+                                navigateTo('exercise', key);
                               }}
                               className="w-full py-3 bg-blue-600 text-white rounded-full text-sm font-medium 
                               hover:bg-blue-700 transition-all duration-200 active:scale-95"
@@ -191,7 +201,7 @@ const HomeScreen = () => {
 
         <div className={isFirstVisit ? "footer-animation" : ""}>
           <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-800">
-            {/* ... existing navigation content ... */}
+            <TabNavigation currentScreen={currentScreen} />
           </nav>
         </div>
       </div>

@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Smartphone, Wifi, CheckCircle2, AlertCircle } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useApp } from '../../context/AppContext';
 import Header from './common/Header';
+import { ScanScreenProps } from '../../types/types';
 
-const ScanScreen = () => {
-  const router = useRouter();
-  const { isDarkMode } = useApp();
+const ScanScreen: React.FC<ScanScreenProps> = () => {
+  const { isDarkMode, navigateTo, setScanComplete } = useApp();
   const [scanStep, setScanStep] = useState(0);
   const [deviceConnected, setDeviceConnected] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
@@ -63,11 +62,12 @@ const ScanScreen = () => {
   useEffect(() => {
     if (isComplete) {
       const timer = setTimeout(() => {
-        router.push('/result?from=scan');
+        setScanComplete(true);
+        navigateTo('result');
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isComplete, router]);
+  }, [isComplete, navigateTo, setScanComplete]);
 
   const handleStepAction = () => {
     if (scanStep === 0) {
@@ -89,7 +89,7 @@ const ScanScreen = () => {
         title="근육 부하 측정"
         leftContent={
           <button 
-            onClick={() => router.push('/')}
+            onClick={() => navigateTo('home')}
             className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center 
             hover:bg-white/30 transition-all duration-200 active:scale-95"
           >

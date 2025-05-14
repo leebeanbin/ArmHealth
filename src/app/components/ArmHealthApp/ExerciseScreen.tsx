@@ -1,21 +1,29 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight, Play, Pause } from 'lucide-react';
-import { massageGuides } from '../../data/massageGuides';
-import { MassageGuides } from '../../types/types';
 import { useApp } from '../../context/AppContext';
 import Header from './common/Header';
+import { ExerciseScreenProps } from '../../types/types';
+import { useParams } from 'next/navigation';
 
-interface ExerciseScreenProps {
-  selectedExercise: keyof MassageGuides;
-  onBack: () => void;
-}
+const ExerciseScreen: React.FC<ExerciseScreenProps> = () => {
+  const params = useParams();
+  const { 
+    isDarkMode, 
+    massageGuides, 
+    selectedExercise: contextSelectedExercise,
+    setSelectedExercise,
+    currentStep,
+    setCurrentStep,
+    formatTime,
+    navigateTo
+  } = useApp();
 
-export const ExerciseScreen: React.FC<ExerciseScreenProps> = ({ selectedExercise, onBack }) => {
-  const [currentStep, setCurrentStep] = useState<number>(0);
+  // 현재 선택된 운동 ID (URL 파라미터 또는 컨텍스트에서 가져옴)
+  const selectedExercise = contextSelectedExercise || (params?.id as string);
+
   const [timer, setTimer] = useState<number>(0);
   const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
-  const { isDarkMode } = useApp();
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -27,7 +35,7 @@ export const ExerciseScreen: React.FC<ExerciseScreenProps> = ({ selectedExercise
     return () => clearInterval(interval);
   }, [isTimerRunning, timer]);
 
-  if (!(selectedExercise in massageGuides)) {
+  if (!massageGuides || !selectedExercise || !(selectedExercise in massageGuides)) {
     return <div className={`min-h-screen ${isDarkMode ? 'bg-gray-900 text-gray-200' : 'bg-white text-gray-800'}`}>운동 가이드를 찾을 수 없습니다.</div>;
   }
 
@@ -51,19 +59,16 @@ export const ExerciseScreen: React.FC<ExerciseScreenProps> = ({ selectedExercise
     }
   };
 
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div className={`flex flex-col min-h-screen ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <Header
         title={guide.title}
         leftContent={
           <button 
-            onClick={onBack}
+            onClick={() => {
+              setSelectedExercise(null);
+              navigateTo('home');
+            }}
             className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center 
             hover:bg-white/30 transition-all duration-200 active:scale-95"
           >
